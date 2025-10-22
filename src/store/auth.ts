@@ -9,6 +9,7 @@ interface User {
 interface RegisterPayload {
   email: string
   password: string
+  full_name?: string
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -34,9 +35,11 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async register(payload: RegisterPayload) {
-      const res = await api.post<User>('/register', payload)
-      this.user = res.data
+      await api.post<User>('/register', payload)
+      await this.login(payload.email, payload.password)
     },
+
+    
 
     async fetchUser() {
       if (!this.token) return
